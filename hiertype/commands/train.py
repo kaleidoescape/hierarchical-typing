@@ -14,16 +14,16 @@ from torch.optim.adamw import AdamW
 from allennlp.data.iterators import BasicIterator
 
 from hiertype.training import MyTrainer
-from hiertype.data import Hierarchy, CachedMentionReader
+from hiertype.data import Hierarchy, HDF5MentionReader
 from hiertype.decoders import BeamDecoder
 from hiertype.models import HierarchicalTyper
 
 
 def main(*,
-         ontology: str,
+         ontology: str, 
          train: str,
          dev: str,
-         out: str,
+         out: str, #output directory
 
          contextualizer: str = "elmo-original",
          input_dim: int = 3072,
@@ -76,7 +76,7 @@ def main(*,
     hierarchy: Hierarchy = Hierarchy.from_tree_file(ontology, with_other=with_other)
     print(hierarchy, file=sys.stderr)
 
-    reader = CachedMentionReader(hierarchy, model=contextualizer)
+    reader = HDF5MentionReader(hierarchy, model=contextualizer)
 
     model = HierarchicalTyper(
         hierarchy=hierarchy,

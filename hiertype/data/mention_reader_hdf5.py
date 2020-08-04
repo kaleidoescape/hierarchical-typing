@@ -3,33 +3,37 @@ from functools import reduce
 import torch
 import numpy as np
 from bisect import bisect_left, bisect_right
+import h5py
 
 from allennlp.data import Instance, DatasetReader
 from allennlp.data.fields import MetadataField
 from hiertype.contextualizers import Contextualizer, get_contextualizer
-from hiertype.data import Hierarchy, StringNdArrayBerkeleyDBStorage
+from hiertype.data import Hierarchy
 from hiertype.fields import TensorField, IntField
+from hiertype.util.logging import setup_logger
 
+logger = setup_logger()
 
-class CachedMentionReader(DatasetReader):
+class HDF5MentionReader(DatasetReader):
 
     def __init__(self,
                  hierarchy: Hierarchy,
                  delimiter: str = "/",
                  model: str = "elmo-original"
                  ):
-        super(CachedMentionReader, self).__init__(lazy=True)
+        super(HDF5MentionReader, self).__init__(lazy=True)
         self.hierarchy = hierarchy
         self.delimiter = delimiter
         self.contextualizer: Contextualizer = get_contextualizer(model, device="cpu", tokenizer_only=True)
 
     def _read(self, file_path: str) -> Iterable[Instance]:
 
-        dump_path, file_path = file_path.split(':')
-        with StringNdArrayBerkeleyDBStorage.open(dump_path, mode='r') as dump, \
-            open(file_path, mode='r') as lines:
-
-            for i, line in enumerate(lines):
+        with h5py.File(file_path, 'r') as prepared_data:
+            
+            for i in range(len(prepared_data)):
+                dset = prepared_data[str(i)]
+                line = dset.attrs['str']
+                sentence_repr_np = np.array(prepared_data[str(i)])
 
                 sentence_str, span_str, type_list_str = line.strip().split('\t')
                 token_left_str, token_right_str = span_str.split(':')
@@ -43,7 +47,6 @@ class CachedMentionReader(DatasetReader):
                 if subtoken_right == subtoken_left:
                     subtoken_right += 1
 
-                sentence_repr_np: np.ndarray = dump[str(i)]
                 sentence_repr = torch.from_numpy(sentence_repr_np).permute(1, 0, 2)  # R[Length, Layer, Emb]
                 sentence_len = sentence_repr.size(0)
                 sentence_repr = sentence_repr.reshape(sentence_len, -1)  # R[Length, Emb]

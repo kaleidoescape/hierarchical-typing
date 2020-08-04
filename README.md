@@ -1,3 +1,11 @@
+This repository is forked from the original code (see Acknowledgements). It makes big changes to the original code and is currently being worked on in a proof-of-concept for another task. 
+
+This code is NOT guaranteed to be up to date or even functional as of yet!
+
+# Acknowledgements
+
+Original code from: https://github.com/ctongfei/hierarchical-typing.git
+
 This repository contains code for the following paper:
  - Tongfei Chen, Yunmo Chen, Benjamin Van Durme (2020): [Hierarchical Entity Typing via Multi-level Learning to Rank](https://www.aclweb.org/anthology/2020.acl-main.749/). In _Proceedings of ACL_.
 
@@ -15,19 +23,3 @@ This repository contains code for the following paper:
 }
  ```
 
- ### Setup
-
-This repository uses [Ducttape](https://github.com/jhclark/ducttape) to manage intermediate results 
-of the experiment pipeline.
-
-To run a portion of the pipeline, first clone this repository to your location, then in `tapes/env.tape`,
-modify various paths to point to various datasets or packages.
-
-Then use the following command:
-
-  ```bash
-    ducttape hiertype.tape -p <TASK>
-  ```
-  where `<TASK>` is any of the plans defined in the Ducttape scripts.
-
-One can easily execute different tasks by modifying the plans in the tape files.

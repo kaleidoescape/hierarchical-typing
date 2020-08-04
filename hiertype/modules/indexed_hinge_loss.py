@@ -45,6 +45,7 @@ class IndexedHingeLoss(torch.nn.Module):
             neg_type_ids
         ]  # R[Batch, PosCand, NegCand]
 
+        assert torch.max(self.margins) <= torch.max(levels)
         level_margins = self.margins[levels] * margin_ratio  # R[Batch, PosCand]
 
         diff = F.relu(
