@@ -24,7 +24,7 @@ class TensorField(Field[torch.Tensor]):
         pad_shape = list(self.tensor.size())
         pad_shape[self.pad_dim] = padding_lengths["length"] - self.tensor.size(self.pad_dim)
 
-        pad = torch.full(pad_shape, self.pad_element).type_as(self.tensor)
+        pad = torch.full(pad_shape, self.pad_element, dtype=self.tensor.dtype)
         return torch.cat([self.tensor, pad], dim=self.pad_dim)
 
     def empty_field(self) -> 'Field':
