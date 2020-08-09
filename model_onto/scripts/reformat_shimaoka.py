@@ -19,7 +19,11 @@ def reformat_file(inp_fp, out_fp, ontology_pieces=None):
     with open(inp_fp, 'r', encoding='utf-8') as infile, \
          open(out_fp, 'w', encoding='utf-8') as outfile:
         for line in infile:
-            start, end, sent, type_list, rest = line.split('\t', maxsplit=4)
+            try:
+                start, end, sent, type_list, rest = line.split('\t', maxsplit=4)
+            except ValueError:
+                print(f"Unable to parse: {line}")
+                continue
             result = f"{sent}\t{start}:{end}\t{type_list}"
             types = set(type_list.split())
             ontology_pieces = ontology_pieces.union(types)

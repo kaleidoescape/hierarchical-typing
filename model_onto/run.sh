@@ -1,22 +1,21 @@
 HIERTYPE=..
-INDATA=../corpus/OntoNotes
+INDATA=./corpus/OntoNotes
 OUTDATA=./prepared_data/OntoNotes
 MODELDIR=./hiertype_onto
-CONTEXTUALIZER=elmo-original
-TOKENIZATION_METHOD=subword
 
-wget http://www.cl.ecei.tohoku.ac.jp/~shimaoka/corpus.zip
+wget -nc http://www.cl.ecei.tohoku.ac.jp/~shimaoka/corpus.zip
 unzip corpus.zip
 
 mkdir -p $OUTDATA
 python scripts/reformat_shimaoka.py $INDATA $OUTDATA
 
 for partition in train dev test; do
+    echo "Reformatting $partition ..."
     python $HIERTYPE/hiertype/commands/prepare_data_hdf5.py \
         --input_fp $OUTDATA/${partition}.txt \
         --output $OUTDATA/${partition}.hdf5 \
-        --model $CONTEXTUALIZER \
-        --unit $TOKENIZATION_METHOD \
+        --model elmo-original \
+        --unit subword \
         --layers [0,1,2] \
         --batch_size 16
 done
