@@ -6,7 +6,7 @@ import sys
 import torch
 import tqdm
 from allennlp.data.iterators import BasicIterator
-from hiertype.data import Hierarchy, CachedMentionReader
+from hiertype.data import Hierarchy, HDF5MentionReader
 from hiertype.models import HierarchicalTyper
 from hiertype.modules import MentionFeatureExtractor, TypeScorer
 from hiertype.decoders import BeamDecoder
@@ -78,7 +78,7 @@ def main(*,
     model.metric.set_serialization_dir(TEST_ARGS.out)
     print("Model loaded.", file=sys.stderr)
 
-    test_reader = CachedMentionReader(hierarchy=hierarchy, model=ARGS.contextualizer)
+    test_reader = HDF5MentionReader(hierarchy=hierarchy, model=ARGS.contextualizer)
     iterator = BasicIterator(batch_size=TEST_ARGS.batch_size)
 
     with torch.no_grad():

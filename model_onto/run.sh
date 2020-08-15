@@ -38,4 +38,12 @@ python $HIERTYPE/hiertype/commands/train.py \
     --regularizer 0.001 \
     --with_other False 
 
+mkdir -p $MODELDIR/evaluation
+python $HIERTYPE/hiertype/commands/run.py \
+    --model $MODELDIR \
+    --test $OUTDATA/test.hdf5 \
+    --out $MODELDIR/evaluation/ \
+    --max_branching_factors [2,1,1] \
+    --strategies [other,none,none] \
+    --delta [0,1,2.5] 
 
