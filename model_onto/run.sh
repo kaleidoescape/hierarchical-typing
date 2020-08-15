@@ -17,7 +17,7 @@ for partition in train dev test; do
         --model elmo-original \
         --unit subword \
         --layers [0,1,2] \
-        --batch_size 16
+        --batch_size 256
 done
 
 mkdir -p $MODELDIR
@@ -29,5 +29,13 @@ python $HIERTYPE/hiertype/commands/train.py \
     --margins [3,2,1] \
     --strategies [other,none,none] \
     --delta [0,1,2.5] \
-    --max_branching_factors [1,1,1]
+    --max_branching_factors [2,1,1] \
+    --dropout_rate 0.1 \
+    --emb_dropout_rate 0.5 \
+    --threshold_ratio 0.15 \
+    --bottleneck_dim 128 \
+    --relation_constraint_coef 0.05 \
+    --regularizer 0.001 \
+    --with_other False 
+
 
