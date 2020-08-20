@@ -31,6 +31,7 @@ def reformat_file(inp_fp, out_fp, ontology_pieces=None):
     return ontology_pieces
 
 def reformat(indir, outdir):
+    print(f"Reformatting {indir} -> {outdir}")
     ontology_fp = os.path.join(outdir, "ontology.txt")
     ontology_pieces = set()
     for root, dirs, files in os.walk(indir):

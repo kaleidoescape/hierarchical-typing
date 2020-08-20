@@ -1,7 +1,7 @@
 HIERTYPE=..
-INDATA=./corpus/OntoNotes
-OUTDATA=./prepared_data/OntoNotes
-MODELDIR=./model
+INDATA=./corpus/Wiki
+OUTDATA=./prepared_data/Wiki
+MODELDIR=./hiertype_figer
 
 wget -nc http://www.cl.ecei.tohoku.ac.jp/~shimaoka/corpus.zip
 unzip corpus.zip
@@ -15,7 +15,7 @@ for partition in train dev test; do
         --input_fp $OUTDATA/${partition}.txt \
         --output $OUTDATA/${partition}.hdf5 \
         --model elmo-original \
-        --unit subword \
+        --unit word \
         --layers [0,1,2] \
         --batch_size 256
 done
@@ -27,16 +27,15 @@ python $HIERTYPE/hiertype/commands/train.py \
     --ontology $OUTDATA/ontology.txt \
     --out $MODELDIR \
     --margins [3,2,1] \
-    --strategies [other,none,none] \
-    --delta [0,1,2.5] \
-    --max_branching_factors [2,1,1] \
+    --strategies [top,none] \
+    --delta [3,1] \
+    --max_branching_factors [2,1] \
     --dropout_rate 0.1 \
     --emb_dropout_rate 0.5 \
-    --threshold_ratio 0.15 \
-    --bottleneck_dim 128 \
+    --threshold_ratio 0.2 \
     --relation_constraint_coef 0.1 \
     --regularizer 0.001 \
-    --with_other False 
+    --with_other True 
 
 mkdir -p $MODELDIR/evaluation
 python $HIERTYPE/hiertype/commands/infer.py \
@@ -44,7 +43,7 @@ python $HIERTYPE/hiertype/commands/infer.py \
     --test $OUTDATA/test.hdf5 \
     --out $MODELDIR/evaluation/ \
     --margins [3,2,1] \
-    --max_branching_factors [2,1,1] \
-    --strategies [other,none,none] \
-    --delta [0,1,2.5] 
+    --max_branching_factors [2,1] \
+    --strategies [top,none] \
+    --delta [3,1] \
 

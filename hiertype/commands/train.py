@@ -26,32 +26,32 @@ def main(*,
          out: str, #output directory
 
          contextualizer: str = "elmo-original",
-         input_dim: int = 3072,
-         type_dim: int = 1024,
-         bottleneck_dim: int = 0,
-         with_other: bool = False,
+         input_dim: int = 3072, #paper: always 3072
+         type_dim: int = 1024, #paper: always 1024
+         bottleneck_dim: int = 0, #paper: not mentioned; code: tuned to 0?
+         with_other: bool = False, #paper: exclusive=True, undefined=False
          lift_other: bool = False,
          mention_pooling: str = "max",
-         emb_dropout_rate: float = 0.3,
+         emb_dropout_rate: float = 0.3, #paper: p_D, always 0.5 
          dropout_rate: float = 0.3,
 
-         margins: List[float] = [],
-         threshold_ratio: float = 0.1,
-         relation_constraint_coef: float = 0.1,
+         margins: List[float] = [], #paper: xi 
+         threshold_ratio: float = 0.1, #paper: alpha 
+         relation_constraint_coef: float = 0.1, #paper: beta 
          num_negative_samples: int = 0,
 
-         max_branching_factors: List[int] = [],
-         delta: List[float] = [],
+         max_branching_factors: List[int] = [], #paper: K_1...k_L 
+         delta: List[float] = [], #paper: delta 
          strategies: List[str] = [],
 
          seed: int = 0xDEADBEEF,
          batch_size: int = 256,
          dev_batch_size: int = 256,
          num_epochs: int = 5,
-         dev_metric: str = "+O_MiF",
+         dev_metric: str = "+O_MiF", #micro F1 (avg F1 over all isntances)
          patience: int = 4,
          lr: float = 1e-5,
-         regularizer: float = 0.1,
+         regularizer: float = 0.1, #paper: lambda 
          gpuid: int = 0
          ):
 
