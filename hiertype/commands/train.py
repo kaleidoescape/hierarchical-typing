@@ -18,7 +18,6 @@ from hiertype.data import Hierarchy, HDF5MentionReader
 from hiertype.decoders import BeamDecoder
 from hiertype.models import HierarchicalTyper
 
-
 def main(*,
          ontology: str, 
          train: str,
@@ -52,7 +51,7 @@ def main(*,
          patience: int = 4,
          lr: float = 1e-5,
          regularizer: float = 0.1, #paper: lambda 
-         gpuid: int = 0
+         cuda_device: List[int] = 0
          ):
 
     args = locals().copy()
@@ -62,7 +61,7 @@ def main(*,
             print(f"{blue('--' + k)} \"{v}\"", file=sys.stderr)
         print(json.dumps(args, indent=2), file=args_out)
 
-    torch.cuda.set_device(gpuid)
+    torch.cuda.set_device(cuda_device)
 
     # Ensure deterministic behavior
     torch.manual_seed(seed)
@@ -75,6 +74,7 @@ def main(*,
 
     hierarchy: Hierarchy = Hierarchy.from_tree_file(ontology, with_other=with_other)
     print(hierarchy, file=sys.stderr)
+    print(f"Using {torch.cuda.device_count()} devices: {torch.cuda.current_device()}")
 
     reader = HDF5MentionReader(hierarchy, model=contextualizer)
 
@@ -121,7 +121,7 @@ def main(*,
         grad_norm=1.0,
         serialization_dir=out,
         num_serialized_models_to_keep=1,
-        cuda_device=gpuid
+        cuda_device=cuda_device
     )
 
     model.set_trainer(trainer)

@@ -35,7 +35,8 @@ python $HIERTYPE/hiertype/commands/train.py \
     --threshold_ratio 0.2 \
     --relation_constraint_coef 0.1 \
     --regularizer 0.001 \
-    --with_other True 
+    --with_other True \
+    --cuda_device 0 1 2 3 4 5 6 7
 
 mkdir -p $MODELDIR/evaluation
 python $HIERTYPE/hiertype/commands/infer.py \
